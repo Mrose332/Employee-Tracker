@@ -15,32 +15,29 @@ const connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
   console.log("T")
-  Tracker();
+  Start();
 });
 
-  const start = [
-    {
-    type: "list",
-    name: "start",
-    message: "Please choose option?",
-    choices: 
-        [
-        "View all Employees",
-        "Add Employee",
-        "Update an Employee Role",
-        "View all Roles",
-        "Add Role",
-        "Add Department",
-        "Done",
-        ]
-    }
+const startQuestions = [
+  {
+  type: "list",
+  name: "start",
+  message: "Please choose option?",
+  choices:
+      [
+        { name: 'View All Roles', value: 'vad' },
+        { name: 'View All Employees', value: 'vae' },
+        { name: 'View All Roles', value: 'var' },
+        { name: 'Add an Employee', value: 'add-employee' },
+      ]
+  }
 ];
 
 const Department = [
   {
   type: "list",
   name: "department",
-  message: "Pleae choose Deparmeny options?",
+  message: "Pleae choose Deparment options?",
   choices: 
       [
       "View all Departments",
@@ -51,20 +48,15 @@ const Department = [
   }
 ];    
 
+const addEmployeeQuestions = [{
+  type: 'input',
+  name: 'first_name',
+  message: 'What is the first name of the employee?'
+}, {
+  type: 'input',
+  name: 'last_name',
+  message: 'What is the last name of the employee?' 
+}];
 
 
-var inquirer = require('inquirer');
-inquirer
-  .prompt([
-    /* Pass your questions in here */
-  ])
-  .then((answers) => {
-    // Use user feedback for... whatever!!
-  })
-  .catch((error) => {
-    if (error.isTtyError) {
-      // Prompt couldn't be rendered in the current environment
-    } else {
-      // Something else went wrong
-    }
-  });
+
