@@ -71,19 +71,46 @@ const addEmployee = () => {
 				message: "Enter employee last name:",
 			},
 		])
-		.then(({ addRole }) => {
+		.then(({ first_name,last_name }) => {
 			connection.query(
-				`INSERT INTO role (first_name,last_name)
+				`INSERT INTO employee (first_name,last_name)
                   VALUES (?,?)`,
-				[addRole],
+				[first_name,last_name ],
 				(err) => {
 					if (err) throw err;
-					console.log("Added " + addEmployee + " to Employee!");
+					console.log("Added " + first_name + last_name + " to Employee!");
 				}
 			);
 		});
 };
 
+const addRole = () => {
+	inquirer
+		.prompt([
+			{
+				type: "input",
+				name: "title",
+				message: "Enter new Role:",
+			},
+
+      {
+				type: "input",
+				name: "salary",
+				message: "Enter salary for this role:",
+			},
+		])
+		.then(({ title,salary }) => {
+			connection.query(
+				`INSERT INTO role (title,salary)
+                  VALUES (?,?)`,
+				[title,salary],
+				(err) => {
+					if (err) throw err;
+					console.log("Added " + title + salary + " to Role!");
+				}
+			);
+		});
+};
 
 
 inquirer
@@ -99,4 +126,28 @@ connection.query(
   })
 }else if(start==='add-department'){
   addDepartment();
-}});
+}
+else if(start==='add-role'){
+  addRole();
+}
+else if(start==='add-employee'){
+  addEmployee();
+}
+
+else if(start==='view-employees'){
+  connection.query(
+    'SELECT * FROM `employee`', 
+    function(err, results,) {
+      console.table(results); // results contains rows returned by server
+     
+    })
+}
+else if(start==='view-department'){
+  connection.query(
+    'SELECT * FROM `department`', 
+    function(err, results,) {
+      console.table(results); 
+     
+    })
+}
+});
