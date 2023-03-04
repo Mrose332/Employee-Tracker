@@ -14,6 +14,7 @@ const connection = mysql.createConnection({
   
   connection.connect(function (err) {
     if (err) throw err;
+ 
   });
 
 const startQuestions = [
@@ -51,10 +52,12 @@ const addDepartment = () => {
 				(err) => {
 					if (err) throw err;
 					console.log("Added " + addDept + " to departments!");
+
 				}
 			);
 		});
 };
+
 
 const addEmployee = () => {
 	inquirer
@@ -70,19 +73,32 @@ const addEmployee = () => {
 				name: "last_name",
 				message: "Enter employee last name:",
 			},
+
+			{
+				type: "input",
+				message: "Enter employee's role ID:",
+				name: "roleID"
+			},
+			{
+				type: "input",
+				message: "Enter employee's manager ID:",
+				name: "managerID"
+			}
 		])
-		.then(({ first_name,last_name }) => {
+		.then(({ first_name,last_name,role_id,manager_id }) => {
 			connection.query(
-				`INSERT INTO employee (first_name,last_name)
-                  VALUES (?,?)`,
-				[first_name,last_name ],
+				`INSERT INTO employee (first_name,last_name,role_id,manager_id)
+                  VALUES (?,?,?,?)`,
+				[first_name,last_name,role_id,manager_id ],
 				(err) => {
 					if (err) throw err;
-					console.log("Added " + first_name + last_name + " to Employee!");
+					console.log("Added " + first_name + last_name + role_id + manager_id +" to Employee!");
 				}
 			);
 		});
 };
+
+
 
 const addRole = () => {
 	inquirer
@@ -107,47 +123,50 @@ const addRole = () => {
 				(err) => {
 					if (err) throw err;
 					console.log("Added " + title + salary + " to Role!");
+          
 				}
-			);
+	
+				);
+				
 		});
+		
 };
 
 
-inquirer
-.prompt(startQuestions)
-.then(({ start }) => {
- if(start === 'view-roles') {
- // simple que
-connection.query(
-  'SELECT * FROM `role`', 
-  function(err, results,) {
-    console.table(results); // results contains rows returned by server
-   
-  })
-}else if(start==='add-department'){
-  addDepartment();
-}
-else if(start==='add-role'){
-  addRole();
-}
-else if(start==='add-employee'){
-  addEmployee();
-}
 
-else if(start==='view-employees'){
-  connection.query(
-    'SELECT * FROM `employee`', 
-    function(err, results,) {
-      console.table(results); // results contains rows returned by server
-     
-    })
-}
-else if(start==='view-department'){
-  connection.query(
-    'SELECT * FROM `department`', 
-    function(err, results,) {
-      console.table(results); 
-     
-    })
-}
-});
+function init() {
+	inquirer.prompt(startQuestions).then(({ start }) => {
+	  if (start === "view-roles") {
+		connection.query("SELECT * FROM `role`", function (err, results) {
+		  console.table(results);
+		  setTimeout(() => {
+			init();
+		  }, 200);
+		});
+	  } else if (start === "add-department") {
+		addDepartment();
+	  } else if (start === "add-role") {
+		addRole();
+	  } else if (start === "add-employee") {
+		addEmployee();
+		
+	  } else if (start === "view-employees") {
+		connection.query("SELECT * FROM `employee`", function (err, results) {
+		  console.table(results);
+		});
+		setTimeout(() => {
+			init();
+		  }, 200);
+	  } else if (start === "view-department") {
+		connection.query("SELECT * FROM `department`", function (err, results) {
+		  console.table(results);
+		});
+		setTimeout(() => {
+			init();
+		  }, 200);
+	  }
+	 
+	});
+  }
+  
+  init();
