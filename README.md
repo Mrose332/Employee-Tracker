@@ -23,9 +23,9 @@ Project is license under MIT
 ![Github license](http://img.shields.io/badge/license-MIT-blue.svg)
 
 ## Usage 
-<img src="src/images/image.jpeg">
+<img src="assets/images/capture.png">
 
-<a href="https://drive.google.com/file/d/1bwxTXjYR7Mu0EOfxnrRxLljV3au-eL2N/preview" width="640" height="480">Link to Video</a>
+<a href=https://drive.google.com/file/d/1YKSoVptN63J9MSRXUirFCBofkFyAK72u/view>Link to Video</a>
 
 ## Contributing 
 
