@@ -40,4 +40,4 @@ NPM Tests
 Reach me for additional questions at: mailto:mrose332@gmail.com.
 
 
-To view deployed project at: .
+To view deployed project at: https://mrose332.github.io/Employee-Tracker/
