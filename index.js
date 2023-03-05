@@ -30,6 +30,7 @@ const startQuestions = [
         { name: 'Add Employee', value: 'add-employee' },
         { name: 'Add Department', value: 'add-department' },
         { name: 'Add Role', value: 'add-role' },
+		{ name: 'Update Employee', value: 'update-employee' },
 
       ]
   }
@@ -52,55 +53,59 @@ const addDepartment = () => {
 				(err) => {
 					if (err) throw err;
 					console.log("Added " + addDept + " to departments!");
-
+					init();
 				}
 			);
 		});
 };
 
 
-const addEmployee = () => {
-	inquirer
-		.prompt([
-			{
-				type: "input",
-				name: "first_name",
-				message: "Enter employee first name:",
-			},
-
-      {
-				type: "input",
-				name: "last_name",
-				message: "Enter employee last name:",
-			},
-
-			{
-				type: "input",
-				message: "Enter employee's role ID:",
-				name: "roleID"
-			},
-			{
-				type: "input",
-				message: "Enter employee's manager ID:",
-				name: "managerID"
-			}
-		])
-		.then(({ first_name,last_name,role_id,manager_id }) => {
-			connection.query(
-				`INSERT INTO employee (first_name,last_name,role_id,manager_id)
-                  VALUES (?,?,?,?)`,
-				[first_name,last_name,role_id,manager_id ],
+const addEmployeeQuestions = [
+	{
+	   type: "input",
+	   name: "first_name",
+	   message: "What is the first name of the employee?",
+	},
+	{
+	   type: "input",
+	   name: "last_name",
+	   message: "What is the last name of the employee?",
+	}
+ ];
+ 
+ const addEmployee = () => {
+	connection.query("SELECT * FROM `role`", (err, results) => {
+	   const roleQuestion = {
+		  type: "list",
+		  name: "role_id",
+		  message: "What is the Role of the employee?",
+		  choices: results.map(result => {
+			 return {
+				name: result.title,
+				value: result.id
+			 }
+		  })
+	   }
+	   inquirer
+		  .prompt(addEmployeeQuestions.concat(roleQuestion))
+		  .then(({ first_name, last_name, role_id }) => {
+			 connection.query(
+				`INSERT INTO employee (first_name, last_name, role_id)
+				   VALUES (?, ?, ?)`, [first_name, last_name, role_id],
 				(err) => {
-					if (err) throw err;
-					console.log("Added " + first_name + last_name + role_id + manager_id +" to Employee!");
+				   if (err) throw err;
+				   console.log("Added ");
+				   init();
 				}
-			);
-		});
-};
+				
+				
+			 );
+		  });
+	});
+ };
 
 
-
-const addRole = () => {
+ const addRole = () => {
 	inquirer
 		.prompt([
 			{
@@ -123,7 +128,7 @@ const addRole = () => {
 				(err) => {
 					if (err) throw err;
 					console.log("Added " + title + salary + " to Role!");
-          
+					init();
 				}
 	
 				);
@@ -131,6 +136,8 @@ const addRole = () => {
 		});
 		
 };
+
+		
 
 
 
@@ -169,4 +176,52 @@ function init() {
 	});
   }
   
+  const updateEmployeeQuestions = [
+	{
+	   type: "input",
+	   name: "id",
+	   message: "What is the id for the employee you wish to update?",
+	},
+	{
+	   type: "input",
+	   name: "role",
+	   message: "What is the id of the new role you would like to assign?",
+	}
+ ];
+ 
+ const updateEmployee = () => {
+	connection.query("SELECT * FROM `role`", (err, results) => {
+	   const roleQuestion = {
+		  type: "list",
+		  name: "role_id",
+		  message: "Which employee would like to update?",
+		  choices: results.map(result => {
+			 return {
+				name: result.title,
+				value: result.id
+			 }
+		  })
+	   }
+	   inquirer
+		  .prompt(updateEmployeeQuestions.concat(roleQuestion))
+		  .then(({ first_name, last_name, role_id }) => {
+			 connection.query(
+				`UPDATE employee set (first_name, last_name, role_id)
+				   VALUES (?, ?, ?)`, [first_name, last_name, role_id],
+				(err) => {
+				   if (err) throw err;
+				   console.log("Added ");
+				}
+				
+				
+			 );
+		  });
+	});
+ };
+
+
+
+
+
+
   init();
